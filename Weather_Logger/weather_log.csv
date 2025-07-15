@@ -1,1 +1,2 @@
 log_datetime,log_date,log_time,temperature,feels_like,humidity,weather_code,precipitation,cloud_cover,wind_speed,wind_direction
+2025-07-16T00:15,2025/07/16,00:15,13.8,14.1,92,Partly cloudy,0.0,59,2.7,203
