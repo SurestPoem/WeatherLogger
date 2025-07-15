@@ -1,5 +1,6 @@
 import requests as req
 import csv
+import os
 
 weather_code_dict = {
     0: "Clear sky",
@@ -72,23 +73,29 @@ def get_current_weather(latitude, longitude):
 
     return weather_data
 
-def save_weather_data_to_csv(weather_data, filename=r'C:\Users\User\Documents\Coding\WeatherLogger\Weather_Logger\weather_log.csv'):
+
+def save_weather_data_to_csv(weather_data, filename='WeatherLogger/Weather_Logger/weather_log.csv'):
     fieldnames = weather_data.keys()
     existing_timestamps = set()
-    with open(filename, mode='r', newline='') as file:
-        reader = csv.DictReader(file)
-        existing_timestamps = {row['log_datetime'] for row in reader}
+
+    if os.path.exists(filename):
+        with open(filename, mode='r', newline='') as file:
+            reader = csv.DictReader(file)
+            existing_timestamps = {row['log_datetime'] for row in reader}
+    else:
+        existing_timestamps = set()
 
     if weather_data['log_datetime'] in existing_timestamps:
         print("Entry for this datetime already exists. Skipping write.")
         return
 
+    # Create directory if it doesn't exist
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+
     with open(filename, mode='a', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
-        # Write header only if the file is empty
         if file.tell() == 0:
             writer.writeheader()
-        
         writer.writerow(weather_data)
         print("Weather data saved successfully.")
 
