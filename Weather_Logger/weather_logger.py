@@ -74,7 +74,7 @@ def get_current_weather(latitude, longitude):
     return weather_data
 
 
-def save_weather_data_to_csv(weather_data, filename='WeatherLogger/Weather_Logger/weather_log.csv'):
+def save_weather_data_to_csv(weather_data, filename='Weather_Logger\weather_log.csv'):
     fieldnames = weather_data.keys()
     existing_timestamps = set()
 
