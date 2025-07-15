@@ -47,7 +47,7 @@ def get_current_weather(latitude, longitude):
         "timezone": "Europe/London"
     }
 
-    print("Fetching current weather data from Open-Meteo...")
+    print("Fetching current weather data from site:", url + " with parameters:", params)
     response = req.get(url, params=params)
 
     print("Response received. Status:", response.status_code)
@@ -75,8 +75,9 @@ def get_current_weather(latitude, longitude):
         'wind_direction': responsejson['current']['wind_direction_10m'],
     }
 
-    return weather_data
+    print("Weather data fetched successfully:", weather_data)
 
+    return weather_data
 
 def save_weather_data_to_csv(weather_data, filename='Weather_Logger/weather_log.csv'):
     print("Logging data for:", weather_data['log_datetime'])
@@ -94,7 +95,6 @@ def save_weather_data_to_csv(weather_data, filename='Weather_Logger/weather_log.
         print("Entry for this datetime already exists. Skipping write.")
         return
 
-    # Create directory if it doesn't exist
     os.makedirs(os.path.dirname(filename), exist_ok=True)
 
     with open(filename, mode='a', newline='') as file:
@@ -103,6 +103,7 @@ def save_weather_data_to_csv(weather_data, filename='Weather_Logger/weather_log.
             writer.writeheader()
         writer.writerow(weather_data)
         print("Weather data saved successfully.")
+        print(f"Data saved at line number: {sum(1 for _ in open(filename))}")
 
 try:
     weather_data = get_current_weather(54.3268, -2.7476)
