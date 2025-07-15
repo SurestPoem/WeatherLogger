@@ -43,10 +43,14 @@ def get_current_weather(latitude, longitude):
     params = {
 	    "latitude": latitude,
 	    "longitude": longitude,
-	    "current": ["temperature_2m", "apparent_temperature", "relative_humidity_2m", "weather_code", "precipitation", "cloud_cover", "wind_speed_10m", "wind_direction_10m"]
+	    "current": ["temperature_2m", "apparent_temperature", "relative_humidity_2m", "weather_code", "precipitation", "cloud_cover", "wind_speed_10m", "wind_direction_10m"],
+        "timezone": "Europe/London"
     }
 
+    print("Fetching current weather data from Open-Meteo...")
     response = req.get(url, params=params)
+
+    print("Response received. Status:", response.status_code)
 
     if response.status_code != 200:
         print(f"Status code: {response.status_code}")
@@ -68,13 +72,14 @@ def get_current_weather(latitude, longitude):
         'precipitation': responsejson['current']['precipitation'],
         'cloud_cover': responsejson['current']['cloud_cover'],
         'wind_speed': responsejson['current']['wind_speed_10m'],
-        'wind_direction': responsejson['current']['wind_direction_10m']
+        'wind_direction': responsejson['current']['wind_direction_10m'],
     }
 
     return weather_data
 
 
-def save_weather_data_to_csv(weather_data, filename='Weather_Logger\weather_log.csv'):
+def save_weather_data_to_csv(weather_data, filename='Weather_Logger/weather_log.csv'):
+    print("Logging data for:", weather_data['log_datetime'])
     fieldnames = weather_data.keys()
     existing_timestamps = set()
 
@@ -99,6 +104,9 @@ def save_weather_data_to_csv(weather_data, filename='Weather_Logger\weather_log.
         writer.writerow(weather_data)
         print("Weather data saved successfully.")
 
-weather_data = get_current_weather(54.3268, -2.7476)
-if weather_data:
-    save_weather_data_to_csv(weather_data)
+try:
+    weather_data = get_current_weather(54.3268, -2.7476)
+    if weather_data:
+        save_weather_data_to_csv(weather_data)
+except Exception as e:
+    print(f"Error occurred: {e}")
