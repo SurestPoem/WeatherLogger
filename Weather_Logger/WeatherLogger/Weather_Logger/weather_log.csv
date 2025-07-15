@@ -1,0 +1,2 @@
+log_datetime,log_date,log_time,temperature,feels_like,humidity,weather_code,precipitation,cloud_cover,wind_speed,wind_direction
+2025-07-15T20:00,2025/07/15,20:00,14.6,14.1,87,Overcast,0.0,94,8.9,223
