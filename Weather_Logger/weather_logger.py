@@ -1,6 +1,10 @@
 import requests as req
 import csv
 import os
+from collections import deque
+import time
+
+start = time.perf_counter()
 
 weather_code_dict = {
     0: "Clear sky",
@@ -79,21 +83,31 @@ def get_current_weather(latitude, longitude):
 
     return weather_data
 
-def save_weather_data_to_csv(weather_data, filename='Weather_Logger/weather_log.csv'):
-    print("Logging data for:", weather_data['log_datetime'])
-    fieldnames = weather_data.keys()
-    existing_timestamps = set()
+
+def get_last_n_lines(filename, n):
+    if not os.path.exists(filename):
+        return set()
 
     if os.path.exists(filename):
         with open(filename, mode='r', newline='') as file:
-            reader = csv.DictReader(file)
-            existing_timestamps = {row['log_datetime'] for row in reader}
-    else:
-        existing_timestamps = set()
+            header = next(file)
+            if header is None:
+                return set() 
+            last_lines = deque(file, maxlen=n)
+            lines_to_parse = [header] + list(last_lines)
+            reader = csv.DictReader(lines_to_parse)
+            timestamps = {row['log_datetime'] for row in reader}
+            return timestamps
+        
+def save_weather_data_to_csv(weather_data, filename='Weather_Logger/weather_log.csv'):
+    print("Logging data for:", weather_data['log_datetime'])
+    fieldnames = weather_data.keys()
+    existing_timestamps = get_last_n_lines(filename, 24)
 
     if weather_data['log_datetime'] in existing_timestamps:
         print("Entry for this datetime already exists. Skipping write.")
         return
+    print("No existing entry found for this datetime. Proceeding to write.")
 
     os.makedirs(os.path.dirname(filename), exist_ok=True)
 
@@ -111,3 +125,6 @@ try:
         save_weather_data_to_csv(weather_data)
 except Exception as e:
     print(f"Error occurred: {e}")
+
+end = time.perf_counter()
+print(f"Script executed in {end - start:.2f} seconds.")
