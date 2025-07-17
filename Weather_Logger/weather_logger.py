@@ -3,8 +3,6 @@ import csv
 import os
 from collections import deque
 import time
-from datetime import datetime
-import pytz
 
 start = time.perf_counter()
 
@@ -82,7 +80,6 @@ def get_current_weather(latitude, longitude):
     }
 
     print("Weather data fetched successfully:", weather_data)
-    print("Exact time of data fetch:", datetime.now(pytz.timezone('Europe/London')).strftime('%Y-%m-%d %H:%M:%S'))
 
     return weather_data
 
