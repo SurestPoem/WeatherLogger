@@ -3,7 +3,6 @@ name: Weather Logger
 
 on:
   schedule:
-    - cron: '30 * * * *' 
   workflow_dispatch: # manual trigger option
 
 jobs:
